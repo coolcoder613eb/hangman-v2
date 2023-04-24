@@ -5,6 +5,7 @@ import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 import os
+import random
 
 path = os.path.dirname(__file__)
 filepath = os.path.join(path, "resources", "words.txt")
@@ -35,14 +36,14 @@ class Hangman(toga.App):
 
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = self.main_box
-        self.main_window.stack_trace_dialog("text", "the text in the file", str(words))
+        #self.main_window.stack_trace_dialog("text", "the text in the file", str(words))
         
-        selections = ['Easy (1-4)','Medium (5-8)','Hard (9-14)']
+        self.selections = ['Easy (1-4)','Medium (5-8)','Hard (9-14)']
 
         self.difficulty_label = toga.Label('Choose a difficulty',style=Pack(text_align='center', padding=(50,50)))
         self.main_box.add(self.difficulty_label)
 
-        self.difficulty_select = toga.Selection(items=selections)
+        self.difficulty_select = toga.Selection(items=self.selections)
         self.main_box.add(self.difficulty_select)
 
         self.difficulty_ok_button = toga.Button('Ok',on_press=self.difficulty_ok,style=Pack(text_align='center', padding=(50,50)))
@@ -51,7 +52,16 @@ class Hangman(toga.App):
         self.main_window.show()
     
     def difficulty_ok(self,widget):
-        pass
+        self.level = self.selections.index(self.difficulty_select.value)
+        self.words=words[self.level]
+        self.word = random.choice(self.words)
+        self.main_box.remove(*self.main_box.children)
+        self.game()
+    
+    def game(self):
+        self.main_window.info_dialog("word", self.word)
+        
+
 
 
 def main():
